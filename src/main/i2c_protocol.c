@@ -349,7 +349,6 @@ static void doing_task(void *arg)
       printf(",");
       //ADC - Channel 
       printf("%d ", _Smoke);
-      printf(",");
     } //end of if 
     counter++;
     printf("\n");
