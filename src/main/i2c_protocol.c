@@ -288,7 +288,15 @@ static esp_err_t slave_setup_ccs881b(void)
 static void doing_task(void *arg)
 {
   int ret;
+  uint8_t counter = 0;
+
+  uint8_t _TimeStamp = 0;
   uint16_t _eCO2;
+  uint8_t _TVOC = 0;
+  uint8_t _Smoke = 0;
+  uint8_t _Alcohol =0;
+  uint8_t _Temp = 0;
+  uint8_t _Humid = 0;
 
   //init the master
   printf("\nSetting Up: Master ....................");
@@ -312,19 +320,42 @@ static void doing_task(void *arg)
 
   printf(" ********** C02 & TVOC Reading: **********\n");
   //---------------------------------------------------
-  while (1) {
+  while (counter < 20) {
     uint8_t buffer_h[8] ={0}, buffer_l[8]={0};
-
     // If for checking the Data Available Register!
     ret = master_read_from(I2C_MASTER_NUM, CCS811B_SENSOR_ADDR, CCS811B_ALG_RESULT_DATA, buffer_h, buffer_l);
     if(ret == ESP_OK){
 
       _eCO2 = (uint16_t)(buffer_h[0] << 8) | (uint16_t)(buffer_h[1]);
       vTaskDelay(1500 / portTICK_PERIOD_MS);
-      printf("eCO2: %d \n", _eCO2);
-    } 
+
+      printf("%d ", _TimeStamp);
+      printf(",");
+
+      //ADC - Channel 
+      printf("%d ", _Temp);
+      printf(",");
+      printf("%d ", _Humid);
+      printf(",");
+
+      //I2C
+      printf("%d ", _eCO2);
+      printf(",");
+      printf("%d ", _TVOC);
+      printf(",");
+
+      //ADC - Channel 
+      printf("%d ", _Alcohol);
+      printf(",");
+      //ADC - Channel 
+      printf("%d ", _Smoke);
+      printf(",");
+    } //end of if 
+    counter++;
+    printf("\n");
   }//End of while
- vTaskDelete(NULL);
+
+  vTaskDelete(NULL);
 }
 
 void app_main(void)
